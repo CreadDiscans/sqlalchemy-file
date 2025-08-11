@@ -110,7 +110,7 @@ class File(BaseFile):
             extra["meta_data"] = {}
 
         extra["meta_data"].update(
-            {"filename": self.filename, "content_type": self.content_type}
+            {"filename": self.filename, "content-type": self.content_type}
         )
         stored_file = self.store_content(
             self.original_content,
