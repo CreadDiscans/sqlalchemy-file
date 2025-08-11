@@ -38,7 +38,25 @@ class StoredFile(io.IOBase):
     def get_cdn_url(self) -> Optional[str]:
         """Retrieves the CDN URL of the file if available."""
         try:
-            return self.object.get_cdn_url()
+            if self.object.driver.name == 'MinIO Storage Driver':
+                from minio import Minio
+                from datetime import timedelta
+                client = Minio(
+                    self.object.driver.connectionCls.host,
+                    access_key=self.object.driver.key,
+                    secret_key=self.object.driver.secret,
+                )
+                bucket_name = self.object.container.name
+                object_name = self.object.name
+                expires_seconds = 3600 * 12
+                url = client.presigned_get_object(
+                    bucket_name,
+                    object_name,
+                    expires=timedelta(seconds=expires_seconds)
+                )
+                return url
+            else:
+                return self.object.get_cdn_url()
         except NotImplementedError:
             return None
 
