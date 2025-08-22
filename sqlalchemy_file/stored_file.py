@@ -48,11 +48,11 @@ class StoredFile(io.IOBase):
                 )
                 bucket_name = self.object.container.name
                 object_name = self.object.name
-                expires_seconds = 3600 * 12
+                
                 url = client.presigned_get_object(
                     bucket_name,
                     object_name,
-                    expires=timedelta(seconds=expires_seconds)
+                    expires=None
                 )
                 return url
             else:
