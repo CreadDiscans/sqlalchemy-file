@@ -52,7 +52,7 @@ class StoredFile(io.IOBase):
                 url = client.presigned_get_object(
                     bucket_name,
                     object_name,
-                    expires=None
+                    expires=timedelta(seconds=604800)
                 )
                 return url
             else:
