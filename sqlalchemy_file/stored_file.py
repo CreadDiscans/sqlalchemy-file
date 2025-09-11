@@ -55,6 +55,26 @@ class StoredFile(io.IOBase):
                     expires=timedelta(seconds=604800)
                 )
                 return url
+            elif self.object.driver.name == 'Amazon S3 (us-east-1)' or 'Amazon S3' in self.object.driver.name:
+                import boto3
+                
+                s3_client = boto3.client(
+                    's3',
+                    aws_access_key_id=self.object.driver.key,
+                    aws_secret_access_key=self.object.driver.secret,
+                    region_name=getattr(self.object.driver, 'region_name', 'us-east-1')
+                )
+                
+                bucket_name = self.object.container.name
+                object_name = self.object.name
+                expires_seconds = 3600 * 12
+                
+                url = s3_client.generate_presigned_url(
+                    'get_object',
+                    Params={'Bucket': bucket_name, 'Key': object_name},
+                    ExpiresIn=expires_seconds
+                )
+                return url
             else:
                 return self.object.get_cdn_url()
         except NotImplementedError:
