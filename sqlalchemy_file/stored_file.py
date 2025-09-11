@@ -62,6 +62,7 @@ class StoredFile(io.IOBase):
                     's3',
                     aws_access_key_id=self.object.driver.key,
                     aws_secret_access_key=self.object.driver.secret,
+                    aws_session_token=self.object.driver.token,
                     region_name=getattr(self.object.driver, 'region_name', 'us-east-1')
                 )
                 
